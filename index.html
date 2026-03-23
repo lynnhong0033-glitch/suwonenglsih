@@ -181,13 +181,18 @@ async function sbFetch(table,method='GET',body=null,query=''){
   try{const r=await fetch(url,opts);return await r.json();}catch(e){console.error(e);return[];}
 }
 async function loadAll(){
-  [schedules,homework,quizHistory,customWords]=await Promise.all([
+  const [s,h,q,c]=await Promise.all([
     sbFetch('schedules','GET',null,'?order=date.asc'),
     sbFetch('homework','GET',null,'?order=created_at.desc'),
     sbFetch('quiz_history','GET',null,'?order=created_at.desc'),
     sbFetch('custom_words','GET',null,'?order=created_at.desc')
   ]);
+  schedules=Array.isArray(s)?s:[];
+  homework=Array.isArray(h)?h:[];
+  quizHistory=Array.isArray(q)?q:[];
+  customWords=Array.isArray(c)?c:[];
 }
+
 
 // ========== LOCAL STORAGE ==========
 function lsGet(k,d=null){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch{return d;}}
