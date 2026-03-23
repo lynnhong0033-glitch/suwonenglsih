@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎓 영어 과외 관리</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+  :root {
+    --primary: #4F46E5;
+    --primary-light: #818CF8;
+    --primary-bg: #EEF2FF;
+    --success: #10B981;
+    --success-bg: #D1FAE5;
+    --warning: #F59E0B;
+    --warning-bg: #FEF3C7;
+    --danger: #EF4444;
+    --danger-bg: #FEE2E2;
+    --gray-50: #F9FAFB;
+    --gray-100: #F3F4F6;
+    --gray-200: #E5E7EB;
+    --gray-300: #D1D5DB;
+    --gray-400: #9CA3AF;
+    --gray-500: #6B7280;
+    --gray-600: #4B5563;
+    --gray-700: #374151;
+    --gray-800: #1F2937;
+    --gray-900: #111827;
+    --radius: 16px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+    --shadow-lg: 0 10px 25px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.03);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans KR', -apple-system, sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-800);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: linear-gradient(135deg, var(--primary) 0%, #7C3AED 100%);
+    color: white;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(79,70,229,0.3);
+  }
+
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px 24px 16px;
+  }
+
+  .header h1 {
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+  }
+
+  .header p {
+    font-size: 0.85rem;
+    opacity: 0.85;
+    margin-top: 2px;
+  }
+
+  /* ── Tabs ── */
+  .tabs {
+    display: flex;
+    gap: 0;
+    background: rgba(255,255,255,0.1);
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 12px 8px;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+
+  .tab-btn:hover { color: rgba(255,255,255,0.9); }
+  .tab-btn.active {
+    color: white;
+    border-bottom-color: white;
+    font-weight: 700;
+  }
+
+  /* ── Main ── */
+  .main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ── Cards ── */
+  .card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--gray-100);
+  }
+
+  .card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ── Dashboard Stats ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px 16px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--gray-100);
+  }
+
+  .stat-number {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--primary);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--gray-500);
+    margin-top: 6px;
+    font-weight: 500;
+  }
+
+  /* ── Forms ── */
+  .form-group { margin-bottom: 14px; }
+  .form-group label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--gray-600);
+    margin-bottom: 5px;
+  }
+
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 10px;
+    font-size: 0.92rem;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    background: var(--gray-50);
+  }
+
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-light);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* ── Buttons ── */
+  .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 2px 8px rgba(79,70,229,0.3);
+  }
+  .btn-primary:hover { background: #4338CA; transform: translateY(-1px); }
+
+  .btn-success {
+    background: var(--success);
+    color: white;
+  }
+  .btn-success:hover { background: #059669; }
+
+  .btn-danger {
+    background: none;
+    color: var(--danger);
+    padding: 6px 10px;
+    font-size: 0.78rem;
+  }
+  .btn-danger:hover { background: var(--danger-bg); }
+
+  .btn-sm {
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    border-radius: 8px;
+  }
+
+  /* ── Schedule List ── */
+  .schedule-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--gray-100);
+  }
+
+  .schedule-item:last-child { border-bottom: none; }
+
+  .schedule-date {
+    min-width: 56px;
+    text-align: center;
+    background: var(--primary-bg);
+    border-radius: 12px;
+    padding: 8px 6px;
+  }
+
+  .schedule-date .day {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--primary);
+    line-height: 1;
+  }
+
+  .schedule-date .month {
+    font-size: 0.68rem;
+    color: var(--primary-light);
+    font-weight: 600;
+  }
+
+  .schedule-info { flex: 1; }
+  .schedule-info .title { font-weight: 600; font-size: 0.95rem; }
+  .schedule-info .time { font-size: 0.8rem; color: var(--gray-500); }
+
+  /* ── Homework List ── */
+  .hw-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    background: var(--gray-50);
+    transition: all 0.15s;
+  }
+
+  .hw-item:hover { background: var(--gray-100); }
+
+  .hw-item.done {
+    background: var(--success-bg);
+    opacity: 0.7;
+  }
+
+  .hw-item.done .hw-title { text-decoration: line-through; }
+
+  .hw-check {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    border: 2px solid var(--gray-300);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    background: white;
+  }
+
+  .hw-check:hover { border-color: var(--success); }
+  .hw-item.done .hw-check {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+  }
+
+  .hw-info { flex: 1; }
+  .hw-title { font-weight: 600; font-size: 0.92rem; }
+  .hw-meta { font-size: 0.78rem; color: var(--gray-500); margin-top: 2px; }
+
+  .hw-badge {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+
+  .badge-due { background: var(--warning-bg); color: #B45309; }
+  .badge-overdue { background: var(--danger-bg); color: var(--danger); }
+  .badge-done { background: var(--success-bg); color: #047857; }
+
+  /* ── Vocab Test ── */
+  .word-input-area {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .word-input-area input { flex: 1; }
+
+  .word-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 16px;
+    min-height: 20px;
+  }
+
+  .word-tag {
+    background: var(--primary-bg);
+    color: var(--primary);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .word-tag .remove {
+    cursor: pointer;
+    opacity: 0.5;
+    font-size: 1rem;
+    line-height: 1;
+  }
+  .word-tag .remove:hover { opacity: 1; }
+
+  .quiz-area {
+    text-align: center;
+    padding: 30px 20px;
+  }
+
+  .quiz-word {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--primary);
+    margin-bottom: 8px;
+  }
+
+  .quiz-prompt {
+    color: var(--gray-500);
+    font-size: 0.88rem;
+    margin-bottom: 20px;
+  }
+
+  .quiz-input {
+    width: 100%;
+    max-width: 320px;
+    padding: 14px 20px;
+    border: 2px solid var(--gray-200);
+    border-radius: 14px;
+    font-size: 1.1rem;
+    text-align: center;
+    font-family: inherit;
+    margin-bottom: 14px;
+  }
+
+  .quiz-input:focus {
+    outline: none;
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+  }
+
+  .quiz-result {
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-weight: 600;
+    margin-top: 12px;
+    display: inline-block;
+  }
+
+  .quiz-result.correct { background: var(--success-bg); color: #047857; }
+  .quiz-result.wrong { background: var(--danger-bg); color: var(--danger); }
+
+  .quiz-progress {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+
+  .progress-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--gray-200);
+  }
+
+  .progress-dot.correct { background: var(--success); }
+  .progress-dot.wrong { background: var(--danger); }
+  .progress-dot.current {
+    background: var(--primary);
+    transform: scale(1.3);
+  }
+
+  .score-display {
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  .score-big {
+    font-size: 4rem;
+    font-weight: 900;
+    color: var(--primary);
+    line-height: 1;
+  }
+
+  .score-label { color: var(--gray-500); margin-top: 8px; }
+
+  .wrong-list {
+    text-align: left;
+    margin-top: 20px;
+    padding: 16px;
+    background: var(--danger-bg);
+    border-radius: 12px;
+  }
+
+  .wrong-list h4 { color: var(--danger); margin-bottom: 8px; }
+  .wrong-list-item {
+    font-size: 0.88rem;
+    padding: 4px 0;
+    color: var(--gray-700);
+  }
+
+  /* ── History ── */
+  .history-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: var(--gray-50);
+    border-radius: 10px;
+    margin-bottom: 6px;
+  }
+
+  .history-score {
+    font-weight: 900;
+    font-size: 1.1rem;
+  }
+
+  .history-score.good { color: var(--success); }
+  .history-score.bad { color: var(--danger); }
+
+  /* ── Mode Toggle ── */
+  .mode-toggle {
+    display: flex;
+    gap: 0;
+    background: var(--gray-100);
+    border-radius: 10px;
+    padding: 3px;
+    margin-bottom: 16px;
+  }
+
+  .mode-btn {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    background: none;
+    color: var(--gray-500);
+    transition: all 0.15s;
+  }
+
+  .mode-btn.active {
+    background: white;
+    color: var(--primary);
+    box-shadow: var(--shadow);
+  }
+
+  /* ── Empty ── */
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--gray-400);
+  }
+
+  .empty-state .icon { font-size: 2.5rem; margin-bottom: 10px; }
+
+  /* ── Responsive ── */
+  @media (max-width: 500px) {
+    .form-row { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .main { padding: 16px; }
+  }
+
+  /* ── Word Set Selector ── */
+  .word-set-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .word-set-btn {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--gray-200);
+    background: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+    color: var(--gray-600);
+  }
+
+  .word-set-btn:hover { border-color: var(--primary-light); }
+  .word-set-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+
+  .delete-set-btn {
+    margin-left: -4px;
+    background: none;
+    border: none;
+    color: var(--gray-400);
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 2px 4px;
+  }
+  .delete-set-btn:hover { color: var(--danger); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <h1>🎓 영어 과외 관리</h1>
+    <p id="headerDate"></p>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('dashboard')">📊 대시보드</button>
+    <button class="tab-btn" onclick="switchTab('schedule')">📅 수업일정</button>
+    <button class="tab-btn" onclick="switchTab('homework')">📝 숙제</button>
+    <button class="tab-btn" onclick="switchTab('vocab')">🔤 단어시험</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ────── DASHBOARD ────── -->
+  <div id="tab-dashboard" class="tab-content active">
+    <div class="stats-grid" id="statsGrid"></div>
+    <div class="card">
+      <div class="card-title">📅 다가오는 수업</div>
+      <div id="upcomingSchedule"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📝 미완료 숙제</div>
+      <div id="pendingHomework"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📈 최근 단어시험 결과</div>
+      <div id="recentScores"></div>
+    </div>
+  </div>
+
+  <!-- ────── SCHEDULE ────── -->
+  <div id="tab-schedule" class="tab-content">
+    <div class="card">
+      <div class="card-title">➕ 수업 추가</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>날짜</label>
+          <input type="date" id="schedDate">
+        </div>
+        <div class="form-group">
+          <label>시간</label>
+          <input type="time" id="schedTime" value="19:00">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>수업 내용</label>
+        <input type="text" id="schedTitle" placeholder="예: Chapter 5 문법 + 리딩">
+      </div>
+      <div class="form-group">
+        <label>메모</label>
+        <input type="text" id="schedMemo" placeholder="예: 교재 준비해오기">
+      </div>
+      <button class="btn btn-primary" onclick="addSchedule()">수업 추가</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📅 수업 일정</div>
+      <div id="scheduleList"></div>
+    </div>
+  </div>
+
+  <!-- ────── HOMEWORK ────── -->
+  <div id="tab-homework" class="tab-content">
+    <div class="card">
+      <div class="card-title">➕ 숙제 추가</div>
+      <div class="form-group">
+        <label>숙제 내용</label>
+        <input type="text" id="hwTitle" placeholder="예: 워크북 p.32~35 풀기">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>마감일</label>
+          <input type="date" id="hwDue">
+        </div>
+        <div class="form-group">
+          <label>카테고리</label>
+          <select id="hwCategory">
+            <option value="문법">문법</option>
+            <option value="리딩">리딩</option>
+            <option value="리스닝">리스닝</option>
+            <option value="라이팅">라이팅</option>
+            <option value="단어">단어</option>
+            <option value="기타">기타</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="addHomework()">숙제 추가</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📋 숙제 목록</div>
+      <div class="mode-toggle">
+        <button class="mode-btn active" onclick="filterHW('all', this)">전체</button>
+        <button class="mode-btn" onclick="filterHW('pending', this)">미완료</button>
+        <button class="mode-btn" onclick="filterHW('done', this)">완료</button>
+      </div>
+      <div id="homeworkList"></div>
+    </div>
+  </div>
+
+  <!-- ────── VOCAB ────── -->
+  <div id="tab-vocab" class="tab-content">
+
+    <!-- Word Set Management -->
+    <div class="card">
+      <div class="card-title">📚 단어장 관리</div>
+      <div class="word-set-bar" id="wordSetBar"></div>
+      <div style="display:flex;gap:8px;margin-bottom:14px;">
+        <input type="text" id="newSetName" placeholder="새 단어장 이름 (예: Week 3)" style="flex:1;padding:8px 14px;border:1.5px solid var(--gray-200);border-radius:10px;font-family:inherit;font-size:0.88rem;background:var(--gray-50);">
+        <button class="btn btn-primary btn-sm" onclick="addWordSet()">만들기</button>
+      </div>
+    </div>
+
+    <!-- Word Input -->
+    <div class="card">
+      <div class="card-title">✏️ 단어 입력 <span style="font-weight:400;font-size:0.8rem;color:var(--gray-400);" id="currentSetLabel"></span></div>
+      <div class="word-input-area">
+        <input type="text" id="wordEng" placeholder="영어 단어" style="flex:1">
+        <input type="text" id="wordKor" placeholder="뜻 (한국어)" style="flex:1">
+        <button class="btn btn-primary btn-sm" onclick="addWord()">추가</button>
+      </div>
+      <div class="word-list" id="wordList"></div>
+    </div>
+
+    <!-- Quiz -->
+    <div class="card">
+      <div class="card-title">🧪 단어 시험</div>
+      <div class="mode-toggle" style="max-width:320px;">
+        <button class="mode-btn active" id="modeEngKor" onclick="setQuizMode('engToKor')">영→한</button>
+        <button class="mode-btn" id="modeKorEng" onclick="setQuizMode('korToEng')">한→영</button>
+      </div>
+      <div id="quizArea">
+        <div class="empty-state">
+          <div class="icon">🧪</div>
+          <p>단어를 추가한 후 시험을 시작하세요!</p>
+          <button class="btn btn-primary" style="margin-top:14px;" onclick="startQuiz()">시험 시작</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="card">
+      <div class="card-title">📊 시험 기록</div>
+      <div id="quizHistory"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════
+//  DATA STORE (localStorage)
+// ═══════════════════════════════════════
+function getData(key, fallback) {
+  try { return JSON.parse(localStorage.getItem('tutor_' + key)) || fallback; }
+  catch { return fallback; }
+}
+function setData(key, val) {
+  localStorage.setItem('tutor_' + key, JSON.stringify(val));
+}
+
+// ── Date helpers ──
+function todayStr() { return new Date().toISOString().split('T')[0]; }
+function formatDate(d) {
+  const dt = new Date(d + 'T00:00:00');
+  return `${dt.getMonth()+1}/${dt.getDate()}(${['일','월','화','수','목','금','토'][dt.getDay()]})`;
+}
+function daysUntil(d) {
+  const today = new Date(todayStr());
+  const target = new Date(d);
+  return Math.ceil((target - today) / 86400000);
+}
+
+// ═══════════════════════════════════════
+//  TAB SWITCHING
+// ═══════════════════════════════════════
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'dashboard') renderDashboard();
+}
+
+// ═══════════════════════════════════════
+//  SCHEDULE
+// ═══════════════════════════════════════
+function getSchedules() { return getData('schedules', []); }
+function saveSchedules(s) { setData('schedules', s); }
+
+function addSchedule() {
+  const date = document.getElementById('schedDate').value;
+  const time = document.getElementById('schedTime').value;
+  const title = document.getElementById('schedTitle').value.trim();
+  if (!date || !title) return alert('날짜와 수업 내용을 입력하세요!');
+  const list = getSchedules();
+  list.push({ id: Date.now(), date, time, title, memo: document.getElementById('schedMemo').value.trim() });
+  list.sort((a,b) => (a.date+a.time).localeCompare(b.date+b.time));
+  saveSchedules(list);
+  document.getElementById('schedTitle').value = '';
+  document.getElementById('schedMemo').value = '';
+  renderSchedules();
+}
+
+function deleteSchedule(id) {
+  saveSchedules(getSchedules().filter(s => s.id !== id));
+  renderSchedules();
+}
+
+function renderSchedules() {
+  const list = getSchedules();
+  const el = document.getElementById('scheduleList');
+  if (!list.length) { el.innerHTML = '<div class="empty-state"><div class="icon">📅</div><p>등록된 수업이 없습니다</p></div>'; return; }
+  el.innerHTML = list.map(s => {
+    const dt = new Date(s.date + 'T00:00:00');
+    const d = daysUntil(s.date);
+    const label = d === 0 ? '오늘!' : d === 1 ? '내일' : d > 0 ? `D-${d}` : `지남`;
+    return `<div class="schedule-item">
+      <div class="schedule-date">
+        <div class="day">${dt.getDate()}</div>
+        <div class="month">${dt.getMonth()+1}월</div>
+      </div>
+      <div class="schedule-info">
+        <div class="title">${s.title}</div>
+        <div class="time">${s.time ? s.time + ' · ' : ''}${formatDate(s.date)} · ${label}${s.memo ? ' · ' + s.memo : ''}</div>
+      </div>
+      <button class="btn btn-danger" onclick="deleteSchedule(${s.id})">삭제</button>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+//  HOMEWORK
+// ═══════════════════════════════════════
+function getHomework() { return getData('homework', []); }
+function saveHomework(h) { setData('homework', h); }
+
+function addHomework() {
+  const title = document.getElementById('hwTitle').value.trim();
+  const due = document.getElementById('hwDue').value;
+  const cat = document.getElementById('hwCategory').value;
+  if (!title || !due) return alert('숙제 내용과 마감일을 입력하세요!');
+  const list = getHomework();
+  list.push({ id: Date.now(), title, due, category: cat, done: false });
+  list.sort((a,b) => a.due.localeCompare(b.due));
+  saveHomework(list);
+  document.getElementById('hwTitle').value = '';
+  renderHomework();
+}
+
+function toggleHW(id) {
+  const list = getHomework();
+  const item = list.find(h => h.id === id);
+  if (item) item.done = !item.done;
+  saveHomework(list);
+  renderHomework();
+}
+
+function deleteHW(id) {
+  saveHomework(getHomework().filter(h => h.id !== id));
+  renderHomework();
+}
+
+let hwFilter = 'all';
+function filterHW(f, btn) {
+  hwFilter = f;
+  document.querySelectorAll('#tab-homework .mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderHomework();
+}
+
+function renderHomework() {
+  let list = getHomework();
+  if (hwFilter === 'pending') list = list.filter(h => !h.done);
+  if (hwFilter === 'done') list = list.filter(h => h.done);
+  const el = document.getElementById('homeworkList');
+  if (!list.length) { el.innerHTML = '<div class="empty-state"><div class="icon">📝</div><p>숙제가 없습니다</p></div>'; return; }
+  el.innerHTML = list.map(h => {
+    const d = daysUntil(h.due);
+    let badge = '';
+    if (h.done) badge = '<span class="hw-badge badge-done">완료</span>';
+    else if (d < 0) badge = '<span class="hw-badge badge-overdue">기한 초과!</span>';
+    else if (d <= 2) badge = '<span class="hw-badge badge-due">마감 임박</span>';
+    return `<div class="hw-item ${h.done ? 'done' : ''}">
+      <div class="hw-check" onclick="toggleHW(${h.id})">${h.done ? '✓' : ''}</div>
+      <div class="hw-info">
+        <div class="hw-title">${h.title}</div>
+        <div class="hw-meta">${h.category} · 마감: ${formatDate(h.due)}</div>
+      </div>
+      ${badge}
+      <button class="btn btn-danger" onclick="deleteHW(${h.id})">삭제</button>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+//  VOCAB
+// ═══════════════════════════════════════
+function getWordSets() { return getData('wordSets', [{id: 1, name: 'Week 1'}]); }
+function saveWordSets(s) { setData('wordSets', s); }
+function getWords(setId) { return getData('words_' + setId, []); }
+function saveWords(setId, w) { setData('words_' + setId, w); }
+function getHistory() { return getData('quizHistory', []); }
+function saveHistory(h) { setData('quizHistory', h); }
+
+let currentSetId = null;
+let quizMode = 'engToKor';
+
+function setQuizMode(m) {
+  quizMode = m;
+  document.getElementById('modeEngKor').classList.toggle('active', m === 'engToKor');
+  document.getElementById('modeKorEng').classList.toggle('active', m === 'korToEng');
+}
+
+function addWordSet() {
+  const name = document.getElementById('newSetName').value.trim();
+  if (!name) return;
+  const sets = getWordSets();
+  const newSet = { id: Date.now(), name };
+  sets.push(newSet);
+  saveWordSets(sets);
+  document.getElementById('newSetName').value = '';
+  currentSetId = newSet.id;
+  renderWordSets();
+  renderWords();
+}
+
+function selectWordSet(id) {
+  currentSetId = id;
+  renderWordSets();
+  renderWords();
+}
+
+function deleteWordSet(id) {
+  if (!confirm('이 단어장을 삭제하시겠습니까?')) return;
+  saveWordSets(getWordSets().filter(s => s.id !== id));
+  localStorage.removeItem('tutor_words_' + id);
+  if (currentSetId === id) currentSetId = getWordSets()[0]?.id || null;
+  renderWordSets();
+  renderWords();
+}
+
+function renderWordSets() {
+  const sets = getWordSets();
+  if (!currentSetId && sets.length) currentSetId = sets[0].id;
+  const el = document.getElementById('wordSetBar');
+  el.innerHTML = sets.map(s =>
+    `<span style="display:inline-flex;align-items:center;gap:2px;">
+      <button class="word-set-btn ${s.id === currentSetId ? 'active' : ''}" onclick="selectWordSet(${s.id})">${s.name} (${getWords(s.id).length})</button>
+      <button class="delete-set-btn" onclick="deleteWordSet(${s.id})">×</button>
+    </span>`
+  ).join('');
+  const label = document.getElementById('currentSetLabel');
+  const cur = sets.find(s => s.id === currentSetId);
+  label.textContent = cur ? `— ${cur.name}` : '';
+}
+
+function addWord() {
+  if (!currentSetId) return alert('단어장을 먼저 선택하세요!');
+  const eng = document.getElementById('wordEng').value.trim();
+  const kor = document.getElementById('wordKor').value.trim();
+  if (!eng || !kor) return alert('영어 단어와 뜻을 모두 입력하세요!');
+  const words = getWords(currentSetId);
+  words.push({ eng, kor });
+  saveWords(currentSetId, words);
+  document.getElementById('wordEng').value = '';
+  document.getElementById('wordKor').value = '';
+  document.getElementById('wordEng').focus();
+  renderWords();
+  renderWordSets();
+}
+
+function removeWord(idx) {
+  const words = getWords(currentSetId);
+  words.splice(idx, 1);
+  saveWords(currentSetId, words);
+  renderWords();
+  renderWordSets();
+}
+
+function renderWords() {
+  const el = document.getElementById('wordList');
+  if (!currentSetId) { el.innerHTML = ''; return; }
+  const words = getWords(currentSetId);
+  el.innerHTML = words.map((w, i) =>
+    `<span class="word-tag">${w.eng} = ${w.kor}<span class="remove" onclick="removeWord(${i})">×</span></span>`
+  ).join('');
+}
+
+// ── Quiz Engine ──
+let quiz = null;
+
+function startQuiz() {
+  if (!currentSetId) return alert('단어장을 선택하세요!');
+  const words = getWords(currentSetId);
+  if (words.length < 2) return alert('최소 2개 이상의 단어가 필요합니다!');
+  // Shuffle
+  const shuffled = [...words].sort(() => Math.random() - 0.5);
+  quiz = { words: shuffled, current: 0, results: [], mode: quizMode };
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const el = document.getElementById('quizArea');
+  if (!quiz) return;
+
+  if (quiz.current >= quiz.words.length) {
+    // Show results
+    const correct = quiz.results.filter(r => r.correct).length;
+    const total = quiz.results.length;
+    const pct = Math.round(correct / total * 100);
+
+    // Save to history
+    const sets = getWordSets();
+    const setName = sets.find(s => s.id === currentSetId)?.name || '';
+    const history = getHistory();
+    history.unshift({ date: todayStr(), setName, correct, total, pct, mode: quiz.mode, wrongs: quiz.results.filter(r => !r.correct) });
+    if (history.length > 50) history.length = 50;
+    saveHistory(history);
+    renderHistory();
+
+    const wrongItems = quiz.results.filter(r => !r.correct);
+    el.innerHTML = `<div class="score-display">
+      <div class="score-big">${pct}%</div>
+      <div class="score-label">${total}문제 중 ${correct}개 정답</div>
+      ${wrongItems.length ? `<div class="wrong-list"><h4>틀린 단어 😢</h4>${wrongItems.map(w =>
+        `<div class="wrong-list-item">• <b>${w.question}</b> → 정답: <b>${w.answer}</b> (내 답: ${w.userAnswer || '—'})</div>`
+      ).join('')}</div>` : '<p style="margin-top:16px;color:var(--success);font-weight:700;">🎉 전부 맞았어요! 완벽!</p>'}
+      <button class="btn btn-primary" style="margin-top:20px;" onclick="quiz=null;renderQuizDefault();">다시 시험보기</button>
+    </div>`;
+    return;
+  }
+
+  const w = quiz.words[quiz.current];
+  const question = quiz.mode === 'engToKor' ? w.eng : w.kor;
+  const prompt = quiz.mode === 'engToKor' ? '뜻을 입력하세요 (한국어)' : '영어 단어를 입력하세요';
+
+  el.innerHTML = `<div class="quiz-area">
+    <div class="quiz-progress">${quiz.words.map((_, i) => {
+      let cls = 'progress-dot';
+      if (i < quiz.current) cls += quiz.results[i].correct ? ' correct' : ' wrong';
+      if (i === quiz.current) cls += ' current';
+      return `<div class="${cls}"></div>`;
+    }).join('')}</div>
+    <div style="color:var(--gray-400);font-size:0.82rem;margin-bottom:8px;">${quiz.current + 1} / ${quiz.words.length}</div>
+    <div class="quiz-word">${question}</div>
+    <div class="quiz-prompt">${prompt}</div>
+    <input class="quiz-input" id="quizInput" placeholder="정답 입력..." onkeydown="if(event.key==='Enter')checkAnswer()" autofocus>
+    <br>
+    <button class="btn btn-primary" onclick="checkAnswer()">확인</button>
+    <div id="quizFeedback"></div>
+  </div>`;
+  setTimeout(() => document.getElementById('quizInput')?.focus(), 50);
+}
+
+function checkAnswer() {
+  if (!quiz) return;
+  const input = document.getElementById('quizInput').value.trim();
+  const w = quiz.words[quiz.current];
+  const answer = quiz.mode === 'engToKor' ? w.kor : w.eng;
+  const question = quiz.mode === 'engToKor' ? w.eng : w.kor;
+  const correct = input.toLowerCase().replace(/\s/g,'') === answer.toLowerCase().replace(/\s/g,'');
+
+  quiz.results.push({ question, answer, userAnswer: input, correct });
+
+  const fb = document.getElementById('quizFeedback');
+  if (correct) {
+    fb.innerHTML = '<div class="quiz-result correct">✅ 정답!</div>';
+  } else {
+    fb.innerHTML = `<div class="quiz-result wrong">❌ 오답! 정답: <b>${answer}</b></div>`;
+  }
+
+  setTimeout(() => {
+    quiz.current++;
+    renderQuiz();
+  }, correct ? 800 : 1800);
+}
+
+function renderQuizDefault() {
+  document.getElementById('quizArea').innerHTML = `<div class="empty-state">
+    <div class="icon">🧪</div>
+    <p>단어를 추가한 후 시험을 시작하세요!</p>
+    <button class="btn btn-primary" style="margin-top:14px;" onclick="startQuiz()">시험 시작</button>
+  </div>`;
+}
+
+function renderHistory() {
+  const history = getHistory();
+  const el = document.getElementById('quizHistory');
+  if (!history.length) { el.innerHTML = '<div class="empty-state"><div class="icon">📊</div><p>시험 기록이 없습니다</p></div>'; return; }
+  el.innerHTML = history.slice(0, 15).map(h =>
+    `<div class="history-item">
+      <div>
+        <div style="font-weight:600;font-size:0.88rem;">${h.setName || '단어장'} (${h.mode === 'engToKor' ? '영→한' : '한→영'})</div>
+        <div style="font-size:0.78rem;color:var(--gray-400);">${formatDate(h.date)} · ${h.total}문제</div>
+      </div>
+      <div class="history-score ${h.pct >= 70 ? 'good' : 'bad'}">${h.pct}%</div>
+    </div>`
+  ).join('');
+}
+
+// ═══════════════════════════════════════
+//  DASHBOARD
+// ═══════════════════════════════════════
+function renderDashboard() {
+  // Stats
+  const schedules = getSchedules();
+  const homework = getHomework();
+  const history = getHistory();
+  const upcoming = schedules.filter(s => daysUntil(s.date) >= 0).length;
+  const hwPending = homework.filter(h => !h.done).length;
+  const hwDone = homework.filter(h => h.done).length;
+  const avgScore = history.length ? Math.round(history.slice(0, 10).reduce((a,b) => a + b.pct, 0) / Math.min(history.length, 10)) : '—';
+
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-card"><div class="stat-number">${upcoming}</div><div class="stat-label">남은 수업</div></div>
+    <div class="stat-card"><div class="stat-number" style="color:var(--warning);">${hwPending}</div><div class="stat-label">미완료 숙제</div></div>
+    <div class="stat-card"><div class="stat-number" style="color:var(--success);">${hwDone}</div><div class="stat-label">완료한 숙제</div></div>
+    <div class="stat-card"><div class="stat-number">${avgScore}${typeof avgScore === 'number' ? '%' : ''}</div><div class="stat-label">평균 단어점수</div></div>
+  `;
+
+  // Upcoming schedule (next 3)
+  const up = schedules.filter(s => daysUntil(s.date) >= 0).slice(0, 3);
+  document.getElementById('upcomingSchedule').innerHTML = up.length
+    ? up.map(s => `<div class="schedule-item">
+        <div class="schedule-date"><div class="day">${new Date(s.date+'T00:00:00').getDate()}</div><div class="month">${new Date(s.date+'T00:00:00').getMonth()+1}월</div></div>
+        <div class="schedule-info"><div class="title">${s.title}</div><div class="time">${s.time || ''} · ${formatDate(s.date)}</div></div>
+      </div>`).join('')
+    : '<div class="empty-state">예정된 수업이 없습니다</div>';
+
+  // Pending HW
+  const pend = homework.filter(h => !h.done).slice(0, 5);
+  document.getElementById('pendingHomework').innerHTML = pend.length
+    ? pend.map(h => {
+        const d = daysUntil(h.due);
+        let badge = d < 0 ? '<span class="hw-badge badge-overdue">기한 초과!</span>' : d <= 2 ? '<span class="hw-badge badge-due">마감 임박</span>' : '';
+        return `<div class="hw-item"><div class="hw-info"><div class="hw-title">${h.title}</div><div class="hw-meta">${h.category} · 마감: ${formatDate(h.due)}</div></div>${badge}</div>`;
+      }).join('')
+    : '<div class="empty-state">미완료 숙제가 없습니다 👏</div>';
+
+  // Recent scores
+  document.getElementById('recentScores').innerHTML = history.length
+    ? history.slice(0, 5).map(h => `<div class="history-item"><div><div style="font-weight:600;font-size:0.88rem;">${h.setName || '단어장'}</div><div style="font-size:0.78rem;color:var(--gray-400);">${formatDate(h.date)}</div></div><div class="history-score ${h.pct>=70?'good':'bad'}">${h.pct}%</div></div>`).join('')
+    : '<div class="empty-state">시험 기록이 없습니다</div>';
+}
+
+// ═══════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════
+document.getElementById('headerDate').textContent =
+  new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'long' });
+document.getElementById('schedDate').value = todayStr();
+document.getElementById('hwDue').value = todayStr();
+
+renderSchedules();
+renderHomework();
+renderWordSets();
+renderWords();
+renderQuizDefault();
+renderHistory();
+renderDashboard();
+</script>
+</body>
+</html>
