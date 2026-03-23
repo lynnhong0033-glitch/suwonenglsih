@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎓 수능영어 과외 관리</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+:root{--p:#4F46E5;--pl:#818CF8;--pb:#EEF2FF;--ok:#10B981;--ob:#D1FAE5;--w:#F59E0B;--wb:#FEF3C7;--e:#EF4444;--eb:#FEE2E2;--g0:#F9FAFB;--g1:#F3F4F6;--g2:#E5E7EB;--g3:#D1D5DB;--g4:#9CA3AF;--g5:#6B7280;--g6:#4B5563;--g7:#374151;--g8:#1F2937;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--g0);color:var(--g8);line-height:1.7}
+.hid{display:none!important}
+.rs{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:14px;padding:20px}
+.rs h1{font-size:1.7rem;font-weight:900}.rs>p{color:var(--g5);font-size:.85rem}
+.rc-w{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+.rc{background:#fff;border-radius:18px;padding:32px 24px;text-align:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.04);border:2px solid var(--g2);transition:.2s;min-width:150px}
+.rc:hover{border-color:var(--p);transform:translateY(-3px);box-shadow:0 6px 20px rgba(79,70,229,.1)}
+.rc .em{font-size:2.2rem;margin-bottom:6px}.rc .nm{font-size:.95rem;font-weight:700}.rc .ds{font-size:.7rem;color:var(--g5);margin-top:2px}
+.hd{background:linear-gradient(135deg,var(--p),#7C3AED);color:#fff;position:sticky;top:0;z-index:100;box-shadow:0 4px 16px rgba(79,70,229,.2)}
+.hd-i{max-width:960px;margin:0 auto;padding:12px 16px 8px;display:flex;justify-content:space-between;align-items:center}
+.hd h1{font-size:1.1rem;font-weight:900}
+.hd-r{display:flex;align-items:center;gap:8px}
+.hd-rl{background:rgba(255,255,255,.15);padding:3px 9px;border-radius:14px;font-size:.68rem;font-weight:600}
+.hd-bk{background:rgba(255,255,255,.1);border:none;color:#fff;padding:4px 10px;border-radius:6px;font-size:.72rem;cursor:pointer;font-family:inherit;font-weight:600}
+.tb{display:flex;max-width:960px;margin:0 auto;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tb button{flex:1;padding:8px 2px;background:none;border:none;color:rgba(255,255,255,.45);font-size:.68rem;font-weight:600;cursor:pointer;border-bottom:2.5px solid transparent;font-family:inherit;white-space:nowrap;transition:.15s;min-width:60px}
+.tb button.a{color:#fff;border-bottom-color:#fff;font-weight:700}
+.mn{max-width:960px;margin:0 auto;padding:16px}
+.cd{background:#fff;border-radius:14px;padding:16px;margin-bottom:11px;box-shadow:0 1px 2px rgba(0,0,0,.03);border:1px solid var(--g1)}
+.ct{font-size:.92rem;font-weight:700;margin-bottom:11px;display:flex;align-items:center;gap:6px}
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:12px}
+.sc{background:#fff;border-radius:14px;padding:14px 10px;text-align:center;box-shadow:0 1px 2px rgba(0,0,0,.03);border:1px solid var(--g1)}
+.sn{font-size:1.5rem;font-weight:900;color:var(--p);line-height:1}.sl{font-size:.66rem;color:var(--g5);margin-top:2px}
+.fg{margin-bottom:9px}
+.fg label{display:block;font-size:.73rem;font-weight:600;color:var(--g6);margin-bottom:2px}
+.fg input,.fg select,.fg textarea{width:100%;padding:7px 10px;border:1.5px solid var(--g2);border-radius:8px;font-size:.86rem;font-family:inherit;background:var(--g0)}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--pl);background:#fff}
+.fg textarea{min-height:70px;resize:vertical;line-height:1.6}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn{padding:7px 14px;border:none;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s}
+.bp{background:var(--p);color:#fff}.bp:hover{background:#4338CA}
+.bo{background:#fff;color:var(--p);border:1.5px solid var(--p)}.bo:hover{background:var(--pb)}
+.be{background:none;color:var(--e);padding:3px 6px;font-size:.7rem}.be:hover{background:var(--eb)}
+.bs{padding:4px 10px;font-size:.72rem}
+.mt{display:flex;background:var(--g1);border-radius:8px;padding:2px;margin-bottom:10px}
+.mb{flex:1;padding:5px 6px;border:none;border-radius:6px;font-size:.73rem;font-weight:600;cursor:pointer;font-family:inherit;background:none;color:var(--g5);transition:.15s}
+.mb.a{background:#fff;color:var(--p);box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.sb{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
+.s-b{padding:3px 9px;border-radius:12px;border:1.5px solid var(--g2);background:#fff;font-size:.71rem;font-weight:600;cursor:pointer;font-family:inherit;color:var(--g6);transition:.15s}
+.s-b:hover{border-color:var(--pl)}.s-b.a{background:var(--p);color:#fff;border-color:var(--p)}
+.wt{display:flex;flex-wrap:wrap;gap:3px;max-height:160px;overflow-y:auto}
+.wt span{background:var(--pb);color:var(--p);padding:2px 8px;border-radius:12px;font-size:.7rem;font-weight:600}
+.qa{text-align:center;padding:16px 10px}
+.qw{font-size:1.6rem;font-weight:900;color:var(--p);margin-bottom:4px;word-break:keep-all}
+.qp{color:var(--g5);font-size:.8rem;margin-bottom:12px}
+.qi{width:100%;max-width:260px;padding:10px 14px;border:2px solid var(--g2);border-radius:10px;font-size:.95rem;text-align:center;font-family:inherit}
+.qi:focus{outline:none;border-color:var(--pl)}
+.qf{padding:8px 12px;border-radius:8px;font-weight:600;margin-top:8px;display:inline-block;font-size:.84rem}
+.qf.ok{background:var(--ob);color:#047857}.qf.no{background:var(--eb);color:var(--e)}
+.qd{display:flex;justify-content:center;gap:3px;margin-bottom:12px;flex-wrap:wrap}
+.qd div{width:7px;height:7px;border-radius:50%;background:var(--g2)}
+.qd .ok{background:var(--ok)}.qd .no{background:var(--e)}.qd .cur{background:var(--p);transform:scale(1.3)}
+.scb{font-size:2.8rem;font-weight:900;color:var(--p);line-height:1}
+.hw-i{display:flex;align-items:center;gap:8px;padding:9px;border-radius:8px;margin-bottom:4px;background:var(--g0)}
+.hw-i:hover{background:var(--g1)}.hw-i.dn{background:var(--ob);opacity:.55}.hw-i.dn .hw-t{text-decoration:line-through}
+.hw-c{width:17px;height:17px;border-radius:4px;border:2px solid var(--g3);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#fff;font-size:.6rem}
+.hw-i.dn .hw-c{background:var(--ok);border-color:var(--ok);color:#fff}
+.hw-t{font-weight:600;font-size:.82rem}.hw-m{font-size:.68rem;color:var(--g5)}
+.bg{padding:2px 7px;border-radius:12px;font-size:.64rem;font-weight:700}
+.bg-d{background:var(--wb);color:#B45309}.bg-o{background:var(--eb);color:var(--e)}.bg-k{background:var(--ob);color:#047857}
+.si{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--g1)}.si:last-child{border:none}
+.sd{min-width:44px;text-align:center;background:var(--pb);border-radius:8px;padding:5px 3px}
+.sd .d{font-size:1rem;font-weight:900;color:var(--p);line-height:1}.sd .m{font-size:.58rem;color:var(--pl);font-weight:600}
+.sinf{flex:1}.sinf .t{font-weight:600;font-size:.82rem}.sinf .s{font-size:.7rem;color:var(--g5)}
+.hi{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--g0);border-radius:6px;margin-bottom:3px}
+.hs{font-weight:900;font-size:.9rem}.hs.gd{color:var(--ok)}.hs.bd{color:var(--e)}
+.pi{padding:10px 12px;background:var(--g0);border-radius:8px;margin-bottom:5px;cursor:pointer;transition:.15s}
+.pi:hover{background:var(--g1)}.pi .pt{font-weight:600;font-size:.84rem}.pi .ps{font-size:.7rem;color:var(--g5)}
+.p-line{margin-bottom:6px;line-height:1.9;font-size:.88rem}
+.p-inp{border:none;border-bottom:2px solid var(--p);background:transparent;font-size:inherit;font-family:inherit;text-align:center;outline:none;padding:0 1px}
+.p-inp:focus{border-color:var(--pl)}.p-inp.ok{color:var(--ok);border-color:var(--ok)}.p-inp.no{color:var(--e);border-color:var(--e)}
+.rng{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px}
+.rng label{font-size:.72rem;display:flex;align-items:center;gap:3px;background:var(--g0);padding:3px 8px;border-radius:8px;cursor:pointer;border:1px solid var(--g2);transition:.15s;user-select:none}
+.rng label:has(input:checked){background:var(--pb);border-color:var(--p);color:var(--p);font-weight:600}
+.rng input[type=checkbox]{display:none}
+.empty{text-align:center;padding:20px 12px;color:var(--g4);font-size:.84rem}.empty .ic{font-size:1.8rem;margin-bottom:5px}
+.wl{text-align:left;margin-top:12px;padding:10px;background:var(--eb);border-radius:8px}.wl h4{color:var(--e);margin-bottom:4px;font-size:.82rem}.wl-i{font-size:.78rem;padding:2px 0;color:var(--g7)}
+.chart-bar{display:flex;align-items:end;gap:3px;height:100px;margin:8px 0}.chart-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}.chart-fill{width:100%;border-radius:4px 4px 0 0}
+.loading{text-align:center;padding:40px;color:var(--g4)}
+.loading::after{content:'';display:inline-block;width:20px;height:20px;border:3px solid var(--g2);border-top-color:var(--p);border-radius:50%;animation:spin .6s linear infinite;margin-left:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:500px){.fr{grid-template-columns:1fr}.sg{grid-template-columns:repeat(2,1fr)}.mn{padding:10px}.rc-w{flex-direction:column;align-items:center}}
+</style>
+</head>
+<body>
+<div id="R" class="rs">
+<h1>🎓 수능영어 과외 관리</h1>
+<p>27수특 영어 · 영어독해연습 · 영어듣기</p>
+<div class="rc-w">
+<div class="rc" onclick="go('T')"><div class="em">👨‍🏫</div><div class="nm">선생님</div><div class="ds">수업·숙제·시험 출제</div></div>
+<div class="rc" onclick="go('S')"><div class="em">📚</div><div class="nm">학생</div><div class="ds">숙제확인·시험응시</div></div>
+<div class="rc" onclick="go('P')"><div class="em">👨‍👩‍👧</div><div class="nm">부모님</div><div class="ds">성적·진도 확인</div></div>
+</div>
+</div>
+<div id="HD" class="hd hid">
+<div class="hd-i"><h1>🎓 수능영어 과외</h1><div class="hd-r"><span class="hd-rl" id="RL"></span><button class="hd-bk" onclick="bk()">역할변경</button></div></div>
+<div class="tb" id="TB"></div>
+</div>
+<div id="MN" class="mn hid"></div>
+
+<script>
+// ═══ SUPABASE ═══
+const SB_URL='https://nedrgrvaqwlepmrsvhfb.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lZHJncnZhcXdsZXBtcnN2aGZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyNzEwNjIsImV4cCI6MjA4OTg0NzA2Mn0.1XWv3xAok4Oosm3_NFDMb65o8_o2WvpZOzIsB0ZWnnI';
+const sb=supabase.createClient(SB_URL,SB_KEY);
+
+// ═══ DB HELPERS ═══
+async function dbGet(table,order='id'){
+  const{data,error}=await sb.from(table).select('*').order(order,{ascending:true});
+  if(error){console.error(error);return[];}return data||[];
+}
+async function dbInsert(table,row){
+  const{data,error}=await sb.from(table).insert(row).select();
+  if(error){alert('저장 실패: '+error.message);return null;}return data?.[0];
+}
+async function dbUpdate(table,id,updates){
+  const{error}=await sb.from(table).update(updates).eq('id',id);
+  if(error)console.error(error);
+}
+async function dbDelete(table,id){
+  const{error}=await sb.from(table).delete().eq('id',id);
+  if(error)console.error(error);
+}
+
+// ═══ CACHE ═══
+let cache={sch:[],hw:[],pass:[],qh:[]};
+async function loadAll(){
+  cache.sch=await dbGet('schedules');
+  cache.hw=await dbGet('homework');
+  cache.pass=await dbGet('passages');
+  cache.qh=await dbGet('quiz_history');
+  cache.qh.sort((a,b)=>b.id-a.id);
+}
+
+// ═══ UTILS ═══
+const td=()=>new Date().toISOString().split('T')[0];
+const fd=d=>{const t=new Date(d+'T00:00:00');return`${t.getMonth()+1}/${t.getDate()}(${'일월화수목금토'[t.getDay()]})`};
+const du=d=>Math.ceil((new Date(d)-new Date(td()))/864e5);
+const $=id=>document.getElementById(id);
+
+// ═══ VOCAB DATA ═══
+const VD={
+"영독1강":[["universality","보편성"],["affect","정서"],["variable","변수"],["finite","유한한"],["repertoire","레퍼토리"],["formulation","체계적 정리"],["separable","분리될 수 있는"],["recognizable","인식할 수 있는"],["derive from ~","~로부터 비롯되다"],["species-specific","한 종에만 국한된"],["posture","자세"],["transform","전환시키다"],["reveal","밝히다"],["relevant","관련된"],["significantly","상당히"],["verbal","언어적인"],["expressive","표현력 있는"],["construct","구성 개념"],["constrain","제한하다"],["aesthetic","심미적인"],["appropriate","적합한"],["death penalty","사형"],["fundamentally","근본적으로"],["flawed","결함이 있는"],["innocent","무고한"],["execute","처형하다"],["questionnaire","질문지"],["determine","결정하다"],["be exposed to ~","~을 접하다"],["evident","분명한"],["predict","예측하다"],["massively","대규모로"],["consume","집어삼키다"],["consistent","일치하는"],["anticipate","예상하다"],["telescope","망원경"],["patience","인내"],["dispirited","낙담한"],["escalate","악화되다"],["diminish","줄어들다"],["evaluate","평가하다"],["coincidence","우연의 일치"],["counterintuitive","반직관적인"],["odds","확률"],["randomly","무작위로"],["cognitive","인지적인"],["paradigm","패러다임"],["investigate","연구하다"],["spatial","공간적인"],["property","속성"],["visualize","상상하다"],["feature","특징"],["evidence","증거"]],
+"영독2강":[["significant","중요한"],["initially","처음에는"],["vital","필수적인"],["evolve","진화하다"],["sizable","상당한 규모의"],["authority","권위자"],["thought leader","영향력 있는 사람"],["specialized","전문적인"],["response","응답"],["convince","설득하다"],["maximise","극대화하다"],["compete","경쟁하다"],["lay out","제시하다"],["purchase","구매하다"],["perception","인식"],["pharmaceutical","제약의"],["launch","출시하다"],["reassure","안심시키다"],["compute","계산하다"],["approximate","어림잡다"],["stimulus","자극"],["confirm","확인하다"],["trick","속이다"],["illustrate","설명하다"],["observer","관찰자"],["rate","평가하다"],["judgment","판단"],["reliable","신뢰할 수 있는"],["instinct","본능"],["intuitive","직관적인"],["technical","전문적인"],["equivalent","상당하는"],["indication","표시, 징후"],["capture","사로잡다"],["tragic","비극적인"],["companion","동반자"],["statement","진술"],["proceed","진행되다"],["preference","선호"],["evoke","불러일으키다"],["successive","연속된"],["welfare","복지"],["tap into ~","~을 활용하다"],["conflict with","~과 상충하다"]],
+"영독3강":[["compute","계산하다"],["average","평균"],["circuit","회로"],["consciousness","의식"],["bring about ~","~을 초래하다"],["a series of","일련의"],["invisible","보이지 않는"],["randomly","무작위로"],["evidence","증거"],["approximate","대략적인"],["overall","전체적인"],["subjectively","주관적으로"],["extraordinary","비범한"],["distinct","뚜렷이 구별되는"],["significance","의미"],["spiritual","정신적인"],["principle","원리"],["cultivate","양성하다"],["hindrance","방해 요소"],["retain","간직하다"],["invariably","예외 없이"],["hypothesis","가설"],["breakthrough","돌파구"],["devise","고안하다"],["relevant","관련된"],["progress","진전"],["discard","버리다"],["imply","함축하다"],["by definition","정의상"],["indicate","가리키다"],["perspective","관점"],["sensory","감각의"],["capacity","능력"],["heighten","높이다"],["intellectual","지적인"],["unfold","전개되다"],["discomfort","불편함"],["dread","두려워하다"],["discount","무시하다"],["extensive","광범위한"],["phenomenon","현상"],["constraint","제약"],["accuracy","정확도"],["consequence","결과"],["probability","확률"],["autobiographical","자서전적인"],["recollection","기억"],["narrative","서사"],["adolescence","청소년기"],["transition","전환"]],
+"영독4강":[["self-esteem","자존감"],["uniformly","일관되게"],["rating","평가"],["exhibit","보이다"],["consistently","일관되게"],["intermediate","중간적인"],["variable","가변적인"],["literate","문해력 있는"],["take ~ for granted","당연하게 여기다"],["undernourished","영양 부족의"],["repressive","억압하는"],["brutal","잔인한"],["harsh","가혹한"],["barbarous","야만적인"],["prevalent","널리 퍼진"],["privileged","특권이 있는"],["derive from","~에서 파생되다"],["internal","내적인"],["attribute","속성"],["cognitive","인지적인"],["analytic","분석적인"],["inference","추론"],["prediction","예측"],["bear out","입증하다"],["subsequently","그 이후에"],["recall","회상하다"],["artificial","인공의"],["effectively","사실상"],["implant","이식하다"],["readily","쉽게"],["narrative","서사"],["chronological","연대기적인"],["highlight","강조하다"],["launch","시작하다"],["prestige","명망"],["dominance","우세함"],["universally","보편적으로"],["reputation","명성"],["unconscious","무의식적인"],["undoubtedly","의심할 여지 없이"],["noteworthy","주목할 만한"],["grasp","이해하다"],["concrete","구체적인"],["sophisticated","정교한"],["cooperation","협력"],["elaborate","정교한"],["maintenance","유지"],["centralize","중앙 집권화하다"]],
+"영독5강":[["metaphorical","은유적인"],["basis","기반"],["exchange","교류"],["be connected to","~과 연결되어 있다"],["judge","판단하다"],["option","선택지"],["broaden","넓히다"],["horizon","시야"],["circulation","순환"],["faith","신앙"],["alternative","대안"],["legitimate","정당한"],["representation","대표성"],["foresee","예견하다"],["sustained","지속적인"],["abundant","풍부한"],["slope","경사면"],["nutrient","영양분"],["vegetation","식생"],["retain","보존하다"],["native","토종의"],["deforestation","산림 파괴"],["priority","우선순위"],["competitive","경쟁적인"],["trustworthy","신뢰할 수 있는"],["probabilistic","확률론적인"],["exemplar","전형적인 예"],["exceptional","예외적인"],["atypical","비전형적인"],["correspond to","~에 부합하다"],["notion","개념"],["empathy","공감"],["authenticity","진정성"],["premise","전제"],["consistent","일관된"],["underscore","강조하다"],["virtue","미덕"],["stakeholder","이해관계자"],["be derived from","~에서 비롯되다"],["strategic","전략적인"],["integrity","진실성"],["construct","구성하다"],["collective","집단"],["abstract","추상적인"],["represent","나타내다"],["presence","존재"],["imply","암시하다"],["pioneering","선구적인"],["drastic","급진적인"],["inadequate","불충분한"],["grain","곡물"],["vegan","비건"]],
+"영독6강":[["income","소득"],["quantity demanded","수요량"],["marginal utility","한계 효용"],["concept","개념"],["consumer","소비자"],["expansion","확대"],["garment","의류"],["lifespan","수명"],["engage in","~에 관여하다"],["emergence","출현"],["textile","직물"],["dynamic","역학 관계"],["wardrobe","옷"],["possession","소유물"],["contemplative","사색하는"],["infancy","유아기"],["adulthood","성인기"],["chronic","만성적인"],["bedridden","병상에 누워 지내는"],["illustrious","저명한"],["species","종"],["captive","사육되는"],["not necessarily","반드시 ~은 아닌"],["candidate","후보"],["domestic","사육용의"],["breed","품종"],["plausible","그럴듯한"],["hypothesis","가설"],["investigate","조사하다"],["inevitably","필연적으로"],["electoral","선거의"],["classification","분류"],["distinguish","구별하다"],["proportional","비례적인"],["essence","본질"],["ensure","보장하다"],["prospect","가능성"],["successive","연속적인"],["recognize","인식하다"],["derive","얻다"],["cognitive","인지적인"],["transformation","변형"],["identify","알아보다"],["incorporate","포함하다"],["adviser","조언자"],["expertise","전문 지식"],["ongoing","진행 중인"]],
+"영독7강":[["millennium","천년"],["cognition","인지"],["consciousness","의식"],["sophisticated","정교한"],["previously","이전에"],["attribute A to B","A를 B탓으로 돌리다"],["comprehensive","포괄적인"],["abstract","추상적인"],["neural","신경의"],["dialect","방언"],["pass down","전승하다"],["ecological","생태학의"],["affordable","저렴한"],["resolve","해결하다"],["compensate for","보상하다"],["intervention","개입"],["generate","생성하다"],["denial","부정"],["legislation","입법"],["adequate","적절한"],["insufficient","불충분한"],["advocate","옹호하다"],["consistently","지속적으로"],["descendant","후손"],["bond","유대감"],["pupil","학생"],["engagement","참여"],["interpersonal","대인관계의"],["formative","형성기의"],["secure","확보하다"],["persist","지속되다"],["excessive","과도한"],["effectiveness","효과"],["withdraw","철회하다"],["unworthy","가치없는"],["athlete","운동선수"],["pursuit","추구"],["attainment","성취"],["fascinate","매료시키다"],["scholar","학자"],["discipline","분야"],["impulsive","충동적인"],["emotive","감정적인"],["instantaneous","즉각적인"],["discern","분별하다"],["maturity","성숙"],["stream","물줄기"],["extract","추출하다"],["expertise","전문성"]],
+"영독8강":[["delight","기쁨"],["permanently","영구적으로"],["indefinitely","무한히"],["assimilate","동화하다"],["incorporate","포함하다"],["feature","특징"],["responsiveness","반응성"],["duplicate","모방하다"],["counterexample","반례"],["institution","기관"],["depict","묘사하다"],["stereotyped","정형화된"],["elaborate","정교한"],["spatial","공간의"],["timely","시기적절하게"],["exclusive","독점적인"],["representation","표상"],["episodic","단편적인"],["counterpart","대응물"],["verbally","구두로"],["markedly","현저하게"],["substantial","상당한"],["spectator","관중"],["access","접근성"],["coverage","보도"],["adequate","적절한"],["portion","1인분"],["dense","밀도가 높은"],["commercial","상업적인"],["yield","산출하다"],["performance","수행"],["domain","영역"],["proficient","숙달한"],["execution","실행"],["commit to ~","전념하다"],["hinder","방해하다"],["expertise","전문성"],["vary","다양하다"],["minority","소수 집단"],["maintain","유지하다"],["advocate","옹호자"],["induce","유도하다"],["discomfort","불편함"],["atypical","비전형적인"],["property","속성"],["identify","식별하다"],["fulfill","충족시키다"],["classification","분류"],["notion","개념"]]
+};
+
+// ═══ STATE ═══
+let role='',tab='',selSet='',qm='engToKor',qz=null,hwF='all',passLv=1;
+const RN={T:'👨‍🏫 선생님',S:'📚 학생',P:'👨‍👩‍👧 부모님'};
+const TBS={
+T:[['dash','📊 대시보드'],['sch','📅 수업'],['hw','📝 숙제'],['voc','🔤 단어'],['pass','📖 본문'],['hist','📈 성적']],
+S:[['dash','📊 대시보드'],['sch','📅 수업'],['hw','📝 숙제'],['voc','🔤 단어'],['pass','📖 본문'],['hist','📈 성적']],
+P:[['over','📊 현황'],['sch','📅 수업'],['hw','📝 숙제'],['score','📈 성적']]
+};
+
+async function go(r){role=r;$('R').classList.add('hid');$('HD').classList.remove('hid');$('MN').classList.remove('hid');$('RL').textContent=RN[r];
+$('TB').innerHTML=TBS[r].map(t=>`<button data-t="${t[0]}" onclick="sw('${t[0]}')">${t[1]}</button>`).join('');
+$('MN').innerHTML='<div class="loading">데이터 불러오는 중</div>';
+await loadAll();sw(TBS[r][0][0]);}
+function bk(){$('R').classList.remove('hid');$('HD').classList.add('hid');$('MN').classList.add('hid');}
+function sw(id){tab=id;document.querySelectorAll('.tb button').forEach(b=>b.classList.toggle('a',b.dataset.t===id));ren();}
+
+function ren(){const m=$('MN');
+if(role==='P'){m.innerHTML={over:pOver,sch:()=>schV(0),hw:pHw,score:pScore}[tab]();return;}
+m.innerHTML={dash:dashV,sch:()=>schV(role==='T'),hw:()=>hwV(role==='T'),voc:vocV,pass:passV,hist:histV}[tab]();}
+
+// ═══ DASHBOARD ═══
+function dashV(){
+const up=cache.sch.filter(s=>du(s.date)>=0).length;
+const hp=cache.hw.filter(h=>!h.done).length,hd=cache.hw.filter(h=>h.done).length;
+const avg=cache.qh.length?Math.round(cache.qh.slice(0,10).reduce((a,b)=>a+b.pct,0)/Math.min(cache.qh.length,10)):'—';
+let h=`<div class="sg"><div class="sc"><div class="sn">${up}</div><div class="sl">남은수업</div></div><div class="sc"><div class="sn" style="color:var(--w)">${hp}</div><div class="sl">미완료숙제</div></div><div class="sc"><div class="sn" style="color:var(--ok)">${hd}</div><div class="sl">완료숙제</div></div><div class="sc"><div class="sn">${avg}${typeof avg==='number'?'%':''}</div><div class="sl">평균점수</div></div></div>`;
+const u2=cache.sch.filter(s=>du(s.date)>=0).slice(0,3);
+h+=`<div class="cd"><div class="ct">📅 다가오는 수업</div>${u2.length?u2.map(s=>siH(s)).join(''):'<div class="empty">예정된 수업 없음</div>'}</div>`;
+const pn=cache.hw.filter(x=>!x.done).slice(0,5);
+h+=`<div class="cd"><div class="ct">📝 미완료 숙제</div>${pn.length?pn.map(x=>hwI(x)).join(''):'<div class="empty">미완료 숙제 없음 👏</div>'}</div>`;
+return h;}
+
+// ═══ SCHEDULE ═══
+function schV(e){let h='';
+if(e)h+=`<div class="cd"><div class="ct">➕ 수업 추가</div><div class="fr"><div class="fg"><label>날짜</label><input type="date" id="sd" value="${td()}"></div><div class="fg"><label>시간</label><input type="time" id="st" value="19:00"></div></div><div class="fg"><label>수업내용</label><input type="text" id="stt" placeholder="예: 수특 영독 3강 1~4번"></div><div class="fg"><label>메모</label><input type="text" id="sm"></div><button class="btn bp" onclick="addSch()">추가</button></div>`;
+h+=`<div class="cd"><div class="ct">📅 수업일정</div>${cache.sch.length?cache.sch.map(s=>siH(s,e)).join(''):'<div class="empty"><div class="ic">📅</div>등록된 수업 없음</div>'}</div>`;return h;}
+function siH(s,e){const dt=new Date(s.date+'T00:00:00'),d=du(s.date),lb=d===0?'오늘!':d===1?'내일':d>0?`D-${d}`:'지남';
+return`<div class="si"><div class="sd"><div class="d">${dt.getDate()}</div><div class="m">${dt.getMonth()+1}월</div></div><div class="sinf"><div class="t">${s.title}</div><div class="s">${s.time||''} · ${fd(s.date)} · ${lb}${s.memo?' · '+s.memo:''}</div></div>${e?`<button class="btn be" onclick="delSch(${s.id})">삭제</button>`:''}</div>`;}
+async function addSch(){const d=$('sd').value,t=$('stt').value.trim();if(!d||!t)return alert('입력!');
+await dbInsert('schedules',{date:d,time:$('st').value,title:t,memo:$('sm').value.trim()});await loadAll();sw('sch');}
+async function delSch(id){await dbDelete('schedules',id);await loadAll();sw('sch');}
+
+// ═══ HOMEWORK ═══
+function hwV(e){let h='';
+if(e)h+=`<div class="cd"><div class="ct">➕ 숙제 추가</div><div class="fg"><label>숙제</label><input type="text" id="ht" placeholder="예: 영독 3강 1~4번 본문해석+단어암기"></div><div class="fr"><div class="fg"><label>마감</label><input type="date" id="hdu" value="${td()}"></div><div class="fg"><label>카테고리</label><select id="hc"><option>단어암기</option><option>본문해석</option><option>본문암기</option><option>문법</option><option>리딩</option><option>기타</option></select></div></div><button class="btn bp" onclick="addHw()">추가</button></div>`;
+let f=cache.hw;if(hwF==='p')f=f.filter(x=>!x.done);if(hwF==='d')f=f.filter(x=>x.done);
+h+=`<div class="cd"><div class="ct">📋 숙제</div><div class="mt"><button class="mb ${hwF==='all'?'a':''}" onclick="hwF='all';ren()">전체</button><button class="mb ${hwF==='p'?'a':''}" onclick="hwF='p';ren()">미완료</button><button class="mb ${hwF==='d'?'a':''}" onclick="hwF='d';ren()">완료</button></div>${f.length?f.map(x=>hwI(x,e)).join(''):'<div class="empty">숙제 없음</div>'}</div>`;return h;}
+function hwI(x,e){const d=du(x.due);let b='';if(x.done)b='<span class="bg bg-k">완료</span>';else if(d<0)b='<span class="bg bg-o">기한초과</span>';else if(d<=2)b='<span class="bg bg-d">마감임박</span>';
+return`<div class="hw-i ${x.done?'dn':''}"><div class="hw-c" onclick="togHw(${x.id},${!x.done})">${x.done?'✓':''}</div><div style="flex:1"><div class="hw-t">${x.title}</div><div class="hw-m">${x.category||''} · 마감:${fd(x.due)}</div></div>${b}${e?`<button class="btn be" onclick="delHw(${x.id})">삭제</button>`:''}</div>`;}
+async function addHw(){const t=$('ht').value.trim(),d=$('hdu').value;if(!t||!d)return alert('입력!');
+await dbInsert('homework',{title:t,due:d,category:$('hc').value,done:false});await loadAll();sw('hw');}
+async function togHw(id,val){await dbUpdate('homework',id,{done:val});await loadAll();ren();}
+async function delHw(id){await dbDelete('homework',id);await loadAll();sw('hw');}
+
+// ═══ VOCAB ═══
+function vocV(){const sn=Object.keys(VD);if(!selSet||!VD[selSet])selSet=sn[0];const w=VD[selSet]||[];
+let h=`<div class="cd"><div class="ct">📚 단어장</div><div class="sb">${sn.map(s=>`<button class="s-b ${s===selSet?'a':''}" onclick="selSet='${s}';ren()">${s}(${VD[s].length})</button>`).join('')}</div></div>`;
+h+=`<div class="cd"><div class="ct">📖 ${selSet} — ${w.length}단어</div><div class="wt">${w.map(x=>`<span>${x[0]}=${x[1]}</span>`).join('')}</div></div>`;
+h+=`<div class="cd"><div class="ct">🧪 단어시험</div><div class="mt" style="max-width:220px"><button class="mb ${qm==='engToKor'?'a':''}" onclick="qm='engToKor';ren()">영→한</button><button class="mb ${qm==='korToEng'?'a':''}" onclick="qm='korToEng';ren()">한→영</button></div>
+<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px"><button class="btn bp bs" onclick="stQ(0)">전체(${w.length})</button><button class="btn bo bs" onclick="stQ(20)">20문제</button><button class="btn bo bs" onclick="stQ(10)">10문제</button></div><div id="QA"></div></div>`;return h;}
+
+function stQ(n){const w=[...VD[selSet]].sort(()=>Math.random()-.5);qz={w:n?w.slice(0,n):w,i:0,r:[],m:qm,sn:selSet};rQ();}
+function rQ(){const e=$('QA');if(!qz)return;
+if(qz.i>=qz.w.length){const c=qz.r.filter(x=>x.ok).length,t=qz.r.length,p=Math.round(c/t*100);
+saveQuiz(qz.sn,c,t,p,qz.m,'단어',qz.r.filter(x=>!x.ok));
+const wr=qz.r.filter(x=>!x.ok);
+e.innerHTML=`<div class="qa"><div class="scb">${p}%</div><div style="color:var(--g5);margin:4px 0">${t}문제 중 ${c}개 정답</div>${wr.length?`<div class="wl"><h4>❌ 틀린 단어 (${wr.length}개)</h4>${wr.map(w=>`<div class="wl-i">• <b>${w.q}</b> → ${w.a} ${w.u?'(내답:'+w.u+')':''}</div>`).join('')}</div>`:'<div style="margin-top:10px;color:var(--ok);font-weight:700">🎉 완벽!</div>'}
+<button class="btn bp" style="margin-top:12px" onclick="qz=null;sw(tab)">돌아가기</button></div>`;return;}
+const w=qz.w[qz.i],q=qz.m==='engToKor'?w[0]:w[1],pr=qz.m==='engToKor'?'뜻을 입력하세요':'영어를 입력하세요';
+e.innerHTML=`<div class="qa"><div class="qd">${qz.w.map((_,i)=>{let c='';if(i<qz.i)c=qz.r[i].ok?'ok':'no';if(i===qz.i)c='cur';return`<div class="${c}"></div>`;}).join('')}</div><div style="color:var(--g4);font-size:.75rem">${qz.i+1}/${qz.w.length}</div><div class="qw">${q}</div><div class="qp">${pr}</div><input class="qi" id="QI" placeholder="정답..." onkeydown="if(event.key==='Enter')cQ()"><br><button class="btn bp" style="margin-top:8px" onclick="cQ()">확인</button><div id="QF"></div></div>`;
+setTimeout(()=>$('QI')?.focus(),30);}
+function cQ(){if(!qz)return;const inp=$('QI').value.trim(),w=qz.w[qz.i],ans=qz.m==='engToKor'?w[1]:w[0],q=qz.m==='engToKor'?w[0]:w[1];
+const aa=ans.split(',').map(x=>x.trim().toLowerCase().replace(/\s/g,''));const uc=inp.toLowerCase().replace(/\s/g,'');
+const ok=aa.some(a=>a===uc)||uc===ans.toLowerCase().replace(/\s/g,'');
+qz.r.push({q,a:ans,u:inp,ok});$('QF').innerHTML=ok?'<div class="qf ok">✅ 정답!</div>':`<div class="qf no">❌ 정답: <b>${ans}</b></div>`;
+setTimeout(()=>{qz.i++;rQ();},ok?600:1400);}
+
+async function saveQuiz(sn,c,t,p,m,tp,wr){
+await dbInsert('quiz_history',{date:td(),set_name:sn,correct:c,total:t,pct:p,mode:m,quiz_type:tp,wrongs:wr});
+cache.qh.unshift({date:td(),set_name:sn,correct:c,total:t,pct:p,mode:m,quiz_type:tp,wrongs:wr});}
+
+// ═══ PASSAGE ═══
+function passV(){
+const ps=cache.pass;let h='';
+if(role==='T'){
+h+=`<div class="cd"><div class="ct">➕ 본문 추가 (지문 단위)</div>
+<div class="fr"><div class="fg"><label>교재</label><select id="pB"><option>수특 영어</option><option>수특 영독</option></select></div><div class="fg"><label>강-번호 (예: 3-1)</label><input type="text" id="pN" placeholder="3-1"></div></div>
+<div class="fg"><label>제목 (선택)</label><input type="text" id="pT" placeholder="예: 정서적 행동과 환경"></div>
+<div class="fg"><label>영어 본문</label><textarea id="pE" placeholder="영어 원문 붙여넣기. 문장마다 줄바꿈 권장."></textarea></div>
+<div class="fg"><label>한글 해석 (Lv3용)</label><textarea id="pK" placeholder="한글 해석 붙여넣기. 같은 순서로 줄바꿈."></textarea></div>
+<button class="btn bp" onclick="addPass()">저장</button></div>`;}
+
+h+=`<div class="cd"><div class="ct">📖 저장된 본문 (${ps.length}개)</div>`;
+if(!ps.length)h+='<div class="empty"><div class="ic">📖</div>선생님이 본문을 추가하면 여기에 나타납니다</div>';
+else{const grp={};ps.forEach(p=>{if(!grp[p.book])grp[p.book]=[];grp[p.book].push(p);});
+for(const bk of Object.keys(grp)){h+=`<div style="font-weight:700;font-size:.8rem;margin:6px 0 3px;color:var(--g6)">${bk}</div>`;
+grp[bk].sort((a,b)=>a.num.localeCompare(b.num,undefined,{numeric:true}));
+h+=grp[bk].map(p=>`<div class="pi"><div class="pt">${p.book} ${p.num} ${p.title?'— '+p.title:''}</div><div class="ps">${p.eng.split('\\n').filter(x=>x.trim()).length}문장</div></div>${role==='T'?`<button class="btn be" onclick="delPass(${p.id})">삭제</button>`:''}`).join('');}}
+h+=`</div>`;
+
+if(ps.length){
+h+=`<div class="cd"><div class="ct">📝 범위 선택 본문 시험</div>
+<div class="rng" id="PR">${ps.sort((a,b)=>(a.book+a.num).localeCompare(b.book+b.num,undefined,{numeric:true})).map(p=>`<label><input type="checkbox" value="${p.id}"> ${p.book} ${p.num}</label>`).join('')}</div>
+<div class="mt" style="max-width:360px">
+<button class="mb ${passLv===1?'a':''}" onclick="passLv=1;ren()">Lv1 빈칸30%</button>
+<button class="mb ${passLv===2?'a':''}" onclick="passLv=2;ren()">Lv2 빈칸60%</button>
+<button class="mb ${passLv===3?'a':''}" onclick="passLv=3;ren()">Lv3 한→영</button>
+</div><button class="btn bp" onclick="stPass()">시험 시작</button><div id="PA"></div></div>`;}
+return h;}
+
+async function addPass(){const b=$('pB').value,n=$('pN').value.trim(),t=$('pT').value.trim(),e=$('pE').value.trim(),k=$('pK').value.trim();
+if(!n||!e)return alert('강-번호와 영어 본문 필수!');
+await dbInsert('passages',{book:b,num:n,title:t,eng:e,kor:k});await loadAll();sw('pass');}
+async function delPass(id){if(!confirm('삭제?'))return;await dbDelete('passages',id);await loadAll();sw('pass');}
+
+function stPass(){
+const ck=document.querySelectorAll('#PR input:checked');
+const ids=[...ck].map(c=>parseInt(c.value));
+if(!ids.length)return alert('시험 볼 본문을 선택하세요!');
+const ps=cache.pass.filter(p=>ids.includes(p.id));
+const el=$('PA');
+
+if(passLv<=2){
+const rate=passLv===1?0.3:0.6;
+let sents=[];ps.forEach(p=>{p.eng.split('\n').filter(x=>x.trim()).forEach(l=>{sents.push({t:l,bk:p.book,nm:p.num});});});
+let html=`<div style="margin-top:12px"><div style="font-weight:700;margin-bottom:6px">📝 Lv${passLv} 빈칸(${Math.round(rate*100)}%) — ${sents.length}문장</div>`;
+sents.forEach(s=>{
+const ws=s.t.split(/\s+/);const bi=new Set();const tg=Math.max(1,Math.round(ws.length*rate));
+while(bi.size<tg&&bi.size<ws.length){const r=Math.floor(Math.random()*ws.length);if(ws[r].replace(/[^a-zA-Z]/g,'').length<=2&&bi.size<tg-1)continue;bi.add(r);}
+let ln='';ws.forEach((w,i)=>{if(bi.has(i)){const cl=w.replace(/[^a-zA-Z'-]/g,''),pu=w.replace(cl,'');ln+=`<input class="p-inp" data-ans="${cl}" style="width:${Math.max(35,cl.length*8)}px">${pu} `;}else ln+=w+' ';});
+html+=`<div class="p-line"><span style="color:var(--g4);font-size:.62rem">${s.bk} ${s.nm}</span> ${ln}</div>`;});
+html+=`<div style="margin-top:10px"><button class="btn bp" onclick="chkBlanks()">채점</button> <span id="PR2" style="font-weight:700;margin-left:6px"></span></div></div>`;
+el.innerHTML=html;
+}else{
+let sents=[];ps.forEach(p=>{const el2=p.eng.split('\n').filter(x=>x.trim()),kl=p.kor?p.kor.split('\n').filter(x=>x.trim()):[];
+el2.forEach((e2,i)=>{sents.push({e:e2,k:kl[i]||'(해석 없음)',bk:p.book,nm:p.num});});});
+let html=`<div style="margin-top:12px"><div style="font-weight:700;margin-bottom:6px">📝 Lv3 한→영 — ${sents.length}문장</div>`;
+sents.forEach(s=>{const hint=s.e.split(/\s+/).slice(0,2).join(' ')+'...';
+html+=`<div style="background:var(--g0);padding:8px;border-radius:7px;margin-bottom:5px"><div style="font-size:.8rem;font-weight:600">${s.k}</div><div style="font-size:.65rem;color:var(--g4)">힌트: ${hint} | ${s.bk} ${s.nm}</div><textarea class="p-ea" data-ans="${s.e.replace(/"/g,'&quot;')}" style="width:100%;padding:5px 7px;border:1.5px solid var(--g2);border-radius:6px;font-size:.82rem;font-family:inherit;min-height:36px;resize:none" placeholder="영어로..."></textarea></div>`;});
+html+=`<button class="btn bp" style="margin-top:6px" onclick="chkEng()">채점</button><div id="PR2" style="margin-top:6px"></div></div>`;
+el.innerHTML=html;}}
+
+async function chkBlanks(){
+const ins=document.querySelectorAll('.p-inp[data-ans]');let c=0,t=ins.length;
+ins.forEach(inp=>{const a=inp.dataset.ans.toLowerCase().replace(/[^a-z'-]/g,''),v=inp.value.trim().toLowerCase().replace(/[^a-z'-]/g,'');
+if(v===a){inp.classList.add('ok');inp.classList.remove('no');c++;}else{inp.classList.add('no');inp.classList.remove('ok');inp.title='정답:'+inp.dataset.ans;}});
+const p=Math.round(c/t*100);$('PR2').innerHTML=`${c}/${t} (${p}%) ${p>=80?'👏':'😢'}`;
+await saveQuiz(`본문Lv${passLv}`,c,t,p,'','본문',[]);}
+
+async function chkEng(){
+const tas=document.querySelectorAll('.p-ea');let c=0,t=tas.length;
+tas.forEach(ta=>{const ans=ta.dataset.ans.trim(),val=ta.value.trim();
+const aw=ans.toLowerCase().replace(/[^a-z\s]/g,'').split(/\s+/),vw=val.toLowerCase().replace(/[^a-z\s]/g,'').split(/\s+/);
+const m=aw.filter(w=>vw.includes(w)).length,r=aw.length?m/aw.length:0;
+if(r>=0.8){c++;ta.style.borderColor='var(--ok)';ta.style.background='var(--ob)';}
+else{ta.style.borderColor='var(--e)';ta.style.background='var(--eb)';const d=document.createElement('div');d.style.cssText='font-size:.72rem;color:var(--e);margin-top:1px';d.textContent='정답: '+ans;ta.parentElement.appendChild(d);}});
+const p=Math.round(c/t*100);$('PR2').innerHTML=`<div style="font-weight:700;color:var(--p)">${c}/${t} (${p}%)</div>`;
+await saveQuiz('본문Lv3 한→영',c,t,p,'','본문',[]);}
+
+// ═══ HISTORY ═══
+function histV(){
+let h=`<div class="cd"><div class="ct">📊 시험 기록</div>`;
+if(!cache.qh.length){h+='<div class="empty">기록 없음</div></div>';return h;}
+h+=cache.qh.slice(0,30).map(x=>`<div class="hi"><div><div style="font-weight:600;font-size:.8rem">${x.quiz_type==='본문'?'📖':'🔤'} ${x.set_name} <span style="font-size:.66rem;color:var(--g4)">${x.mode||''}</span></div><div style="font-size:.68rem;color:var(--g4)">${fd(x.date)} · ${x.total}문제 · ${x.correct}정답</div></div><div class="hs ${x.pct>=70?'gd':'bd'}">${x.pct}%</div></div>`).join('');
+if(role==='T')h+=`<div style="margin-top:8px;text-align:right"><button class="btn be" onclick="clearHist()">전체삭제</button></div>`;
+h+=`</div>`;return h;}
+async function clearHist(){if(!confirm('전체 삭제?'))return;
+for(const r of cache.qh)await dbDelete('quiz_history',r.id);cache.qh=[];ren();}
+
+// ═══ PARENT ═══
+function pOver(){
+const up=cache.sch.filter(s=>du(s.date)>=0).length;
+const hwT=cache.hw.length,hwD=cache.hw.filter(x=>x.done).length,hwR=hwT?Math.round(hwD/hwT*100):0;
+const avg=cache.qh.length?Math.round(cache.qh.slice(0,10).reduce((a,b)=>a+b.pct,0)/Math.min(cache.qh.length,10)):0;
+let h=`<div class="sg"><div class="sc"><div class="sn">${up}</div><div class="sl">남은수업</div></div><div class="sc"><div class="sn" style="color:${hwR>=80?'var(--ok)':'var(--w)'}">${hwR}%</div><div class="sl">숙제완료율</div></div><div class="sc"><div class="sn">${avg||'—'}${avg?'%':''}</div><div class="sl">평균점수</div></div><div class="sc"><div class="sn">${cache.qh.length}</div><div class="sl">총시험수</div></div></div>`;
+if(cache.qh.length){const rec=cache.qh.slice(0,8).reverse();
+h+=`<div class="cd"><div class="ct">📈 점수 추이</div><div class="chart-bar">${rec.map(r=>{const c=r.pct>=80?'var(--ok)':r.pct>=60?'var(--w)':'var(--e)';return`<div class="chart-col"><div style="font-size:.6rem;font-weight:700">${r.pct}%</div><div class="chart-fill" style="height:${r.pct}%;background:${c};min-height:3px"></div><div style="font-size:.48rem;color:var(--g4)">${(r.set_name||'').slice(0,6)}</div></div>`;}).join('')}</div></div>`;}
+const od=cache.hw.filter(x=>!x.done&&du(x.due)<0);
+if(od.length)h+=`<div class="cd" style="border-left:3px solid var(--e)"><div class="ct">⚠️ 기한초과 ${od.length}개</div>${od.map(x=>`<div style="font-size:.8rem">${x.title} (마감:${fd(x.due)})</div>`).join('')}</div>`;
+return h;}
+function pHw(){let h=`<div class="cd"><div class="ct">📝 숙제현황</div>`;if(!cache.hw.length){h+='<div class="empty">숙제없음</div></div>';return h;}
+h+=cache.hw.map(x=>hwI(x)).join('');h+=`</div>`;return h;}
+function pScore(){let h=`<div class="cd"><div class="ct">📊 성적표</div>`;
+if(!cache.qh.length){h+='<div class="empty">기록없음</div></div>';return h;}
+const avg=Math.round(cache.qh.reduce((a,b)=>a+b.pct,0)/cache.qh.length);
+const best=Math.max(...cache.qh.map(x=>x.pct));
+h+=`<div class="sg"><div class="sc"><div class="sn">${avg}%</div><div class="sl">전체평균</div></div><div class="sc"><div class="sn" style="color:var(--ok)">${best}%</div><div class="sl">최고점수</div></div><div class="sc"><div class="sn">${cache.qh.length}</div><div class="sl">총시험수</div></div></div>`;
+h+=cache.qh.slice(0,20).map(x=>{let wr='';if(x.wrongs?.length)wr=`<div style="font-size:.68rem;color:var(--e);margin-top:1px">틀린것: ${x.wrongs.map(w=>'<b>'+(w.q||'')+'</b>').join(', ')}</div>`;
+return`<div class="hi" style="flex-direction:column;align-items:stretch"><div style="display:flex;justify-content:space-between"><div><div style="font-weight:600;font-size:.8rem">${x.quiz_type==='본문'?'📖':'🔤'} ${x.set_name}</div><div style="font-size:.68rem;color:var(--g4)">${fd(x.date)} · ${x.total}문제</div></div><div class="hs ${x.pct>=70?'gd':'bd'}">${x.pct}%</div></div>${wr}</div>`;}).join('');
+h+=`</div>`;return h;}
+</script>
+</body>
+</html>
